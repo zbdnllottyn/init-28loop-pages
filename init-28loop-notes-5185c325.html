@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, viewport-fit=cover">
+    <title>28圈 · 稳定入口与信息页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f0f7fc;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            color: #1a2e3f;
+            line-height: 1.6;
+            padding: 24px 16px 60px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 860px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* 主视觉 —— 网格卡片基底 */
+        .hero-card {
+            background: linear-gradient(145deg, #f9fdfe, #e5f2f5);
+            border-radius: 32px;
+            padding: 40px 28px 36px;
+            box-shadow: 0 12px 32px rgba(22, 58, 72, 0.08);
+            border: 1px solid rgba(88, 166, 179, 0.18);
+            backdrop-filter: blur(2px);
+            margin-bottom: 24px;
+            transition: all 0.2s ease;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            font-weight: 560;
+            letter-spacing: -0.02em;
+            color: #1a4b5c;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px 10px;
+        }
+
+        .hero-title small {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: #3b6e7c;
+            background: rgba(88, 166, 179, 0.12);
+            padding: 6px 16px;
+            border-radius: 40px;
+            letter-spacing: 0.2px;
+            border: 1px solid rgba(88, 166, 179, 0.2);
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: #1e4150;
+            max-width: 680px;
+            margin-top: 10px;
+            line-height: 1.7;
+            border-left: 4px solid #58a6b3;
+            padding-left: 22px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* 网格卡片体系 —— 任意卡片复用 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0 32px;
+        }
+
+        @media (max-width: 540px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .hero-title {
+                font-size: 1.7rem;
+            }
+            .hero-card {
+                padding: 28px 18px 24px;
+            }
+        }
+
+        .info-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 24px 20px 26px;
+            box-shadow: 0 6px 16px rgba(42, 82, 92, 0.06);
+            border: 1px solid #dfedf0;
+            transition: transform 0.1s ease, box-shadow 0.15s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(42, 82, 92, 0.08);
+            border-color: #a2cfd9;
+        }
+
+        .card-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: #e0f0f4;
+            border-radius: 14px;
+            margin-bottom: 12px;
+            font-size: 1.4rem;
+            color: #1b5b6b;
+        }
+
+        .info-card h3 {
+            font-size: 1.2rem;
+            font-weight: 580;
+            color: #17414f;
+            margin-bottom: 10px;
+            letter-spacing: -0.01em;
+        }
+
+        .info-card p {
+            font-size: 0.98rem;
+            color: #2c4c58;
+            line-height: 1.65;
+            flex: 1;
+        }
+
+        .info-card .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 10px;
+            margin-top: 16px;
+        }
+
+        .tag {
+            background: #e3f0f3;
+            color: #1b555f;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 480;
+            border: 1px solid #b9d9e0;
+        }
+
+        /* 自然链接段落 + 提示区块 */
+        .link-block {
+            background: #ffffff;
+            border-radius: 26px;
+            padding: 24px 24px 26px 24px;
+            box-shadow: 0 6px 16px rgba(42, 82, 92, 0.05);
+            border: 1px solid #e0edf0;
+            margin-bottom: 24px;
+        }
+
+        .link-block p {
+            font-size: 1.02rem;
+            margin-bottom: 12px;
+            color: #1e3d48;
+        }
+
+        .link-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        .link-block a {
+            color: #166b7a;
+            text-decoration: none;
+            font-weight: 540;
+            border-bottom: 1.5px dashed #7fbac7;
+            padding-bottom: 1px;
+            transition: border-bottom 0.15s, color 0.15s;
+        }
+
+        .link-block a:hover {
+            color: #0d4e5c;
+            border-bottom: 1.5px solid #0d4e5c;
+        }
+
+        .faq-mini {
+            background: #f1f8fb;
+            border-radius: 22px;
+            padding: 20px 24px 22px;
+            border-left: 6px solid #58a6b3;
+            margin: 20px 0 0;
+        }
+
+        .faq-mini h4 {
+            font-weight: 550;
+            font-size: 1rem;
+            color: #174f5e;
+            margin-bottom: 8px;
+        }
+
+        .faq-mini p {
+            font-size: 0.95rem;
+            color: #1b4150;
+        }
+
+        .badge-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #58a6b3;
+            border-radius: 10px;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+        .footnote {
+            text-align: center;
+            font-size: 0.88rem;
+            color: #557780;
+            margin-top: 40px;
+            border-top: 1px solid #d0e2e7;
+            padding-top: 28px;
+            letter-spacing: 0.2px;
+        }
+
+        .footnote span {
+            background: #e2f1f4;
+            padding: 2px 12px;
+            border-radius: 40px;
+        }
+
+        hr {
+            border: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #b3d6de, transparent);
+            margin: 10px 0 18px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 主视觉 hero-card -->
+    <div class="hero-card">
+        <div class="hero-title">
+            <span>28圈</span>
+            <small>稳定信息入口</small>
+        </div>
+        <div class="hero-desc">
+            从单一页面出发，快速了解平台结构、用途定位与适用场景。卡片式信息层聚焦真实功能边界，不做夸大延伸。
+        </div>
+    </div>
+
+    <!-- 用途卡片 + 适合人群 两列网格 -->
+    <div class="card-grid">
+        <div class="info-card">
+            <div class="card-icon">📌</div>
+            <h3>用途摘要</h3>
+            <p>围绕信息聚合与轻量交互，提供频道式内容索引、分类展示及基础引导。不承载交易或敏感操作，保持入口页的清晰定位。</p>
+            <div class="tag-list">
+                <span class="tag">信息索引</span>
+                <span class="tag">频道展示</span>
+                <span class="tag">引导页</span>
+            </div>
+        </div>
+        <div class="info-card">
+            <div class="card-icon">👥</div>
+            <h3>适合人群</h3>
+            <p>希望直接了解平台功能框架的新用户；需要固定入口、快速查看页面结构的访问者；对界面效率有要求的日常使用者。</p>
+            <div class="tag-list">
+                <span class="tag">新访客</span>
+                <span class="tag">效率用户</span>
+                <span class="tag">结构参考</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自然链接段落 + 稳定入口说明 -->
+    <div class="link-block">
+        <p>
+            <span class="badge-dot"></span> 如果你正在寻找一个稳定、不绕弯的页面起点，<a href="https://init-28loop.com">28圈</a> 提供了直接的信息展示和导航模块。页面内容以卡片和简要说明为主，避免冗余跳转。
+        </p>
+        <p>
+            本站的定位是功能入口与信息概览，不收集隐私数据，不嵌入第三方跟踪脚本。所有链接均指向平台自身内容，结构清晰可预期。
+        </p>
+    </div>
+
+    <!-- 附加卡片：场景举例 + 提示摘要 保持网格节奏 -->
+    <div class="card-grid" style="margin-top: 8px;">
+        <div class="info-card">
+            <div class="card-icon">📋</div>
+            <h3>常见使用场景</h3>
+            <p>日常浏览频道列表、查阅平台更新说明、快速跳转到相关板块。适合在移动端或桌面端快速获取页面总览。</p>
+        </div>
+        <div class="info-card">
+            <div class="card-icon">📘</div>
+            <h3>页面特征</h3>
+            <p>蓝绿色网格卡片系统，响应式布局适配各类屏幕。所有内容均为静态展示，加载轻量，不依赖复杂脚本。</p>
+        </div>
+    </div>
+
+    <!-- FAQ 摘要区块 (保持自然嵌入) -->
+    <div class="faq-mini">
+        <h4>❓ 常见疑问摘要</h4>
+        <p><strong>页面是否实时更新？</strong> 内容由平台维护，反映当前功能框架，但具体模块可能迭代。建议定期浏览以获取最新索引。</p>
+        <p style="margin-top: 12px;"><strong>如何快速利用这个入口？</strong> 直接通过 <a href="https://init-28loop.com">28圈</a> 的导航卡片或分类标签定位你关心的板块。页面本身作为起点，不做深层跳转限制。</p>
+    </div>
+
+    <!-- 结尾脚注 -->
+    <div class="footnote">
+        <span>内容说明 · 稳定入口</span> &nbsp;|&nbsp; 页面版本 2025 &nbsp;|&nbsp; 信息卡片式布局
+    </div>
+</div>
+</body>
+</html>
